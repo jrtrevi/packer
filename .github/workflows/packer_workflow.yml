@@ -1,0 +1,32 @@
+name: Packer Image Build and Upload
+
+on:
+  push:
+    branches:
+      - main  # Trigger the pipeline on pushes to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    
+    - name: Set up AWS CLI
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws configure set region us-east-1  # Adjust to your region
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-utils awscli
+
+    - name: Run Packer Build
+      run: |
+        packer build -var "platform=$PLATFORM" -var "image_name=$IMAGE_NAME" -var "bucket=$BUCKET" packer-template.json
+
+    - name: Upload Modified Image to S3
+      run: |
+        aws s3 cp "path/to/modified/$IMAGE_NAME" s3://$BUCKET/
