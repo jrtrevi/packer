@@ -1,0 +1,5 @@
+{
+  "platform": "qemu",
+  "image_name": "my-image.img",
+  "bucket": "my-bucket"
+}
