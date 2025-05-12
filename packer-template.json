@@ -1,0 +1,23 @@
+{
+  "variables": {
+    "platform": "qemu",  // Default platform, can be changed per run
+    "image_name": "my-image.img",
+    "bucket": "my-bucket"
+  },
+  "builders": [
+    {
+      "type": "null",
+      "communicator": "none",
+      "skip_cleanup": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell-local",
+      "inline": [
+        "chmod +x scripts/modify-image.sh",
+        "./scripts/modify-image.sh {{user `platform`}} {{user `image_name`}} {{user `bucket`}}"
+      ]
+    }
+  ]
+}
